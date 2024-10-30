@@ -283,4 +283,32 @@ class Arquivos
         // var_dump($retorno);exit;
         return $retorno;
     }
+
+    public function abrir_arquivo(string $nome_arquivo): bool|array
+    {
+        $retorno = false;
+        $caminho_arquivo = DIRETORIO_ARQUIVOS . $nome_arquivo . '.csv';
+        var_dump($caminho_arquivo);
+        if (file_exists($caminho_arquivo)) {
+            $arquivo = fopen($caminho_arquivo, 'r');
+            if (!$arquivo) {
+                $retorno = $arquivo;
+            }else {
+                $retorno = [];
+                $retorno['erro'] = "O arquivo não foi aberto.";
+            }
+        } else {
+            $retorno = [];
+            $retorno['erro'] = "O diretório/arquivo não foi encontrado.";
+        }
+        return $retorno;
+    }
+
+    public function obter_cotacoes(string $ativo = null): bool|array
+    {
+        $retorno = [];
+        $arquivo = $this->abrir_arquivo('cotacoes');
+        var_dump($arquivo);
+        return $retorno;
+    }
 }

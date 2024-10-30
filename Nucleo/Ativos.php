@@ -349,4 +349,11 @@ class Ativos
         // var_dump($retorno);
         return $retorno;
     }
+
+    public function solicitar_cotacoes(string $ativo = null):bool|array{
+        $retorno = [];
+        $arquivos = new Arquivos();
+        $arquivos->obter_cotacoes($ativo);
+        return $retorno;
+    }
 }

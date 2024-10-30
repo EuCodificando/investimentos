@@ -3,7 +3,8 @@ include_once __DIR__ . "/autoload.php";
 use Nucleo\Ativos;
 $ativos = new Ativos();
 $ativo = $_GET['ativo'];
-$dados_ativo = $ativos->solicitar_lista_posicoes($_GET['ativo']);
+$dados_ativo = $ativos->solicitar_lista_posicoes($ativo);
+$cotacoes_ativo = $ativos->solicitar_cotacoes($ativo);
 var_dump($_GET, $dados_ativo);
 ?>
 <!DOCTYPE html>
