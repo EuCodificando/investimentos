@@ -232,10 +232,10 @@ class BaseDados
             $this->contectar();
         }
         if (is_null($ativo)) {
-            $sql_ativos = "SELECT id,ticker FROM ativos;";
+            $sql_ativos = "SELECT * FROM ativos;";
             $stmt_ativos = $this->conexao->prepare($sql_ativos);
         } else if (!is_null($ativo)) {
-            $sql_ativos = "SELECT id,ticker FROM ativos
+            $sql_ativos = "SELECT * FROM ativos
             WHERE ticker = :ativo;";
             $stmt_ativos = $this->conexao->prepare($sql_ativos);
             $stmt_ativos->bindParam(":ativo", $ativo);
@@ -842,6 +842,37 @@ class BaseDados
             }
         }
         // var_dump($retorno);exit;
+        return $retorno;
+    }
+    public function editar_ativo(array|string $dados_ativo): bool|array
+    {
+        var_dump($dados_ativo);//exit;
+        $retorno = false;
+        if (!$this->checar_conexao()) {
+            $this->contectar();
+        }
+        if (isset($this->conexao)) {
+            try {
+                $sql_editar = "UPDATE ativos
+                SET ticker = :nome_ativo,
+                setor_id = :setor,
+                tipo_investimento_id = :tipo_investimento,
+                nacionalidade = :nacionalidade
+                WHERE id = :id";
+                $stmt_editar = $this->conexao->prepare($sql_editar);
+                $stmt_editar->bindParam(":nome_ativo", $dados_ativo['nome_ativo']);
+                $stmt_editar->bindParam(":setor", $dados_ativo['setor'], PDO::PARAM_INT);
+                $stmt_editar->bindParam(":tipo_investimento", $dados_ativo['tipo_investimento'], PDO::PARAM_INT);
+                $stmt_editar->bindParam(":nacionalidade", $dados_ativo['nacionalidade']);
+                $stmt_editar->bindParam(":id", $dados_ativo['id']);
+                $stmt_editar->execute();
+                $retorno = true;
+            } catch (PDOException $e) {
+                $retorno = [];
+                $retorno['erro'] = "Algo deu errado; " . $e->getMessage();
+            }
+        }
+        var_dump($retorno);
         return $retorno;
     }
 }
