@@ -350,18 +350,55 @@ class Ativos
         return $retorno;
     }
 
-    public function solicitar_cotacoes(string $ativo = null):bool|array{
-        $retorno = [];
+    public function solicitar_cotacoes(string|array $dados_ativo = null): bool|array
+    {
+        $retorno = false;
         $arquivos = new Arquivos();
         // $arquivos->criar_arquivo_ativos_banco();exit;
-        $arquivos->obter_cotacoes($ativo);
+        $iBanco = new BaseDados();
+        $retorno_ultima_cotacao = $iBanco->obter_ultima_cotacao($dados_ativo);
+        // var_dump($dados_ativo,$retorno_ultima_cotacao);//exit;
+        if (!$retorno_ultima_cotacao) {
+            //CARREGAR AS COTAÇÕES PELA PRIMEIRA VEZ
+            $arquivos->obter_cotacoes($dados_ativo);
+        } else if (is_array($retorno_ultima_cotacao) && !in_array('erro', array_keys($retorno_ultima_cotacao))) {
+            $retorno = [];
+            $retorno = $iBanco->obter_cotacao($retorno_ultima_cotacao[0]);
+        } else {
+            $retorno = [];
+            $retorno = $retorno_ultima_cotacao['erro'];
+        }
+        // var_dump($retorno);exit;
         return $retorno;
     }
 
-    public function editar_ativo(array|string $dados_ativo):bool|array{
+    public function editar_ativo(array|string $dados_ativo): bool|array
+    {
         $retorno = false;
         $banco = new BaseDados();
         $banco->editar_ativo($dados_ativo);
+        return $retorno;
+    }
+
+    public function solicitar_cadastro_cotacao(array $dados_cotacao): bool|array
+    {
+        $retorno = false;
+        $iBanco = new BaseDados();
+        $retorno = $iBanco->cadastrar_cotacao($dados_cotacao);
+        return $retorno;
+    }
+
+    public function solicitar_data_atualizacao_cotacoes(): array
+    {
+        $retorno = [];
+        $iBanco = new BaseDados();
+        $retorno_data = $iBanco->obter_data_atualizacao_cotacoes();
+        if (is_array($retorno_data) && !in_array('erro', array_keys($retorno_data))) {
+            $retorno = $retorno_data;
+        } else {
+            $retorno = [];
+            $retorno['erro'] = $retorno_data['erro'];
+        }
         return $retorno;
     }
 }

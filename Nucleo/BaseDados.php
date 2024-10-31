@@ -875,4 +875,180 @@ class BaseDados
         var_dump($retorno);
         return $retorno;
     }
+
+    public function cadastrar_cotacao(array $dados_cotacao): bool|array
+    {
+        $retorno = false;
+        if (!$this->checar_conexao()) {
+            $this->contectar();
+        }
+        $temp_campos = implode(',', array_keys($dados_cotacao));
+        if (isset($this->conexao)) {
+            try {
+                $sql_cadastro = "INSERT INTO cotacoes ($temp_campos)
+                VALUES(
+                :ativo_id,:data_cotacao,:abertura,
+                :maxima,:minima,:fechamento)";
+                $stmt_cadastro = $this->conexao->prepare($sql_cadastro);
+                $stmt_cadastro->bindParam(":ativo_id", $dados_cotacao['ativo_id']);
+                $stmt_cadastro->bindParam(":data_cotacao", $dados_cotacao['data_cotacao']);
+                $stmt_cadastro->bindParam(":abertura", $dados_cotacao['abertura']);
+                $stmt_cadastro->bindParam(":maxima", $dados_cotacao['maxima']);
+                $stmt_cadastro->bindParam(":minima", $dados_cotacao['minima']);
+                $stmt_cadastro->bindParam(":fechamento", $dados_cotacao['fechamento']);
+                $stmt_cadastro->execute();
+                $retorno = true;
+            } catch (PDOException $e) {
+                $retorno = [];
+                $retorno[] = "Algo deu errado; " . $e->getMessage();
+            }
+        }
+        return $retorno;
+    }
+
+    public function atualizar_data_cotacoes(string $data): bool|array
+    {
+        // var_dump($data);
+        $retorno = false;
+        if (!$this->checar_conexao()) {
+            $this->contectar();
+        }
+        if (isset($this->conexao)) {
+            try {
+                $retorno_data = $this->obter_data_atualizacao_cotacoes();
+                if (!$retorno_data || (is_array($retorno_data) && in_array('erro', array_keys($retorno_data)))) {
+                    $sql =
+                        "INSERT INTO 
+                            configuracoes (data_atualizacao_cotacoes)
+                        VALUES (:data);";
+                } else if (is_array($retorno_data) && !in_array('erro', array_keys($retorno_data))) {
+                    $sql =
+                        "UPDATE 
+                        configuracoes
+                    SET 
+                        data_atualizacao_cotacoes = :data";
+                }
+                // var_dump($sql);exit;
+                $stmt = $this->conexao->prepare($sql);
+                $stmt->bindParam(":data", $data);
+                $stmt->execute();
+                $retorno = true;
+            } catch (PDOException $e) {
+                $retorno = [];
+                $retorno['erro'] = "Algo deu errado; " . $e->getMessage();
+            }
+        }
+        // var_dump($retorno);exit;
+        return $retorno;
+    }
+
+    public function obter_data_atualizacao_cotacoes(): bool|array
+    {
+        $retorno = false;
+        if (!$this->checar_conexao()) {
+            $this->contectar();
+        }
+        if (isset($this->conexao)) {
+            try {
+                $sql_data = "SELECT 
+                    data_atualizacao_cotacoes 
+                FROM
+                    configuracoes;";
+                $stmt_data = $this->conexao->prepare($sql_data);
+                $stmt_data->execute();
+                $retorno_sql = $stmt_data->fetch(PDO::FETCH_ASSOC);
+                if (!$retorno_sql) {
+                    $retorno = [];
+                    $retorno['erro'] = "Ainda não foi cadastrada uma data de atualização.";
+                } else {
+                    $retorno = [];
+                    $retorno = $retorno_sql;
+                }
+            } catch (PDOException $e) {
+                $retorno = [];
+                $retorno['erro'] = "Algo deu errado; " . $e->getMessage();
+            }
+        }
+        // var_dump($retorno);
+        return $retorno;
+    }
+
+    public function obter_ultima_cotacao(array|string $ativo = null): bool|array
+    {
+        $retorno = false;
+        // var_dump($ativo);exit;
+        if (!$this->checar_conexao()) {
+            $this->contectar();
+        }
+        if (isset($this->conexao)) {
+            try {
+                $sql_cotacao = "SELECT 
+                    ativo_id,
+                    ativos.ticker as ticker,                    
+                    data_cotacao,
+                    abertura,
+                    maxima,
+                    minima,
+                    fechamento
+                 FROM 
+                     cotacoes
+                 JOIN 
+                    ativos ON ativos.id = ativo_id
+                WHERE 
+                    ativo_id = :id
+                ORDER BY 
+                    data_cotacao DESC 
+                LIMIT 1";
+                $stmt_cotacao = $this->conexao->prepare($sql_cotacao);
+                $stmt_cotacao->bindParam(":id", $ativo['id']);
+                $stmt_cotacao->execute();
+                $retorno = $stmt_cotacao->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                $retorno = [];
+                $retorno['erro'] = "Algo deu errado; " . $e->getMessage();
+            }
+        }
+        // var_dump($retorno);exit;
+        return $retorno;
+    }
+
+
+
+    public function obter_cotacao(array|string $dados_ativo): bool|array
+    {
+        // var_dump($dados_ativo);//exit;
+        $retorno = false;
+        if (!$this->checar_conexao()) {
+            $this->contectar();
+        }
+        if (isset($this->conexao)) {
+            try {
+                $sql_cotacao =
+                    "SELECT 
+                        ativo_id,
+                        ativos.ticker as ticker,                    
+                        data_cotacao,
+                        abertura,
+                        maxima,
+                        minima,
+                        fechamento
+                    FROM 
+                        cotacoes
+                    JOIN 
+                        ativos ON ativos.id = ativo_id
+                    WHERE 
+                        ativo_id = {$dados_ativo['ativo_id']}
+                    ORDER BY 
+                        data_cotacao DESC";
+                // var_dump($sql_cotacao);exit;
+                $stmt_cotacao = $this->conexao->prepare($sql_cotacao);
+                $stmt_cotacao->execute();
+                $retorno = $stmt_cotacao->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                $retorno = [];
+                $retorno['erro'] = "Algo deu errado; " . $e->getMessage();
+            }
+        }
+        return $retorno;
+    }
 }
