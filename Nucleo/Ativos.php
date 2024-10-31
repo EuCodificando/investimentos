@@ -353,7 +353,15 @@ class Ativos
     public function solicitar_cotacoes(string $ativo = null):bool|array{
         $retorno = [];
         $arquivos = new Arquivos();
+        // $arquivos->criar_arquivo_ativos_banco();exit;
         $arquivos->obter_cotacoes($ativo);
+        return $retorno;
+    }
+
+    public function editar_ativo(array|string $dados_ativo):bool|array{
+        $retorno = false;
+        $banco = new BaseDados();
+        $banco->editar_ativo($dados_ativo);
         return $retorno;
     }
 }

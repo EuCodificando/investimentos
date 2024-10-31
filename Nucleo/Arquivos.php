@@ -44,19 +44,57 @@ class Arquivos
         return $retorno;
     }
 
-    protected function criar_arquivo_ativos(array $dados)
+    public function criar_arquivo_ativos_banco()
+    {
+        $banco = new BaseDados();
+        $lista_ativos = $banco->obter_ativos();
+        // var_dump($lista_ativos);
+        $arquivo_ativos_criado = fopen(DIRETORIO_ARQUIVOS . "b3Ativos.csv", 'w+');
+        $temp_cabecalho = false;
+        for ($i = 0; $i < count($lista_ativos); $i++) {
+            if (!$temp_cabecalho) {
+                $id_linha = 1;
+                fputs($arquivo_ativos_criado, $bom = (chr(0xEF) . chr(0xBB) . chr(0xBF)));
+                fputcsv(
+                    $arquivo_ativos_criado,
+                    array('id', 'id_ativo', 'ticker'),
+                    ";"
+                );
+                fputcsv(
+                    $arquivo_ativos_criado,
+                    array($id_linha, $lista_ativos[$i]['id'], $lista_ativos[$i]['ticker']),
+                    ";"
+                );
+                $temp_cabecalho = true;
+            } else {
+                $id_linha++;
+                fputcsv(
+                    $arquivo_ativos_criado,
+                    array($id_linha, $lista_ativos[$i]['id'], $lista_ativos[$i]['ticker']),
+                    ";"
+                );
+            }
+        }
+    }
+
+    /**
+     * É necessário o arquivo de operações
+     * @param array $dados_arquivo_operacoes
+     * @return void
+     */
+    protected function criar_arquivo_ativos_de_operacoes(array $dados_arquivo_operacoes)
     {
         // var_dump($dados);exit;
         $arquivo_ativos_criado = fopen(DIRETORIO_ARQUIVOS . "b3Ativos.csv", 'w+');
         $temp_cabecalho = false;
-        foreach ($dados as $keyA => $valueA) {
+        foreach ($dados_arquivo_operacoes as $keyA => $valueA) {
             if (str_contains($keyA, '34')) {
                 $nacionalidade = "Investimento estrangeiro";
             } else {
                 $nacionalidade = "Investimento nacional";
             }
             if (!$temp_cabecalho) {
-                $id_ativo = 1;
+                $id_linha = 1;
                 fputs($arquivo_ativos_criado, $bom = (chr(0xEF) . chr(0xBB) . chr(0xBF)));
                 fputcsv($arquivo_ativos_criado, array('id', 'ticker', 'tipo_investimento', 'nacionalidade'), ";");
                 fputcsv($arquivo_ativos_criado, array($id_ativo, "$keyA", "$valueA", $nacionalidade), ";");
@@ -284,16 +322,18 @@ class Arquivos
         return $retorno;
     }
 
-    public function abrir_arquivo(string $nome_arquivo): bool|array
+    public function abrir_arquivo(string $nome_arquivo): mixed
     {
         $retorno = false;
         $caminho_arquivo = DIRETORIO_ARQUIVOS . $nome_arquivo . '.csv';
-        var_dump($caminho_arquivo);
+        $arquivo = null;
+        // var_dump($caminho_arquivo);
         if (file_exists($caminho_arquivo)) {
-            $arquivo = fopen($caminho_arquivo, 'r');
-            if (!$arquivo) {
+            $arquivo = fopen($caminho_arquivo, 'r', true);
+            //  var_dump($arquivo);exit;
+            if (!is_null($arquivo)) {
                 $retorno = $arquivo;
-            }else {
+            } else {
                 $retorno = [];
                 $retorno['erro'] = "O arquivo não foi aberto.";
             }
@@ -308,7 +348,8 @@ class Arquivos
     {
         $retorno = [];
         $arquivo = $this->abrir_arquivo('cotacoes');
-        var_dump($arquivo);
+        $numero_linhas = file(DIRETORIO_ARQUIVOS."cotacoes.csv");
+        var_dump($numero_linhas);
         return $retorno;
     }
 }
