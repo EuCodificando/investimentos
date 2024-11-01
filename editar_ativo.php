@@ -5,6 +5,7 @@ $ativos = new Ativos();
 session_start();
 if (isset($_SESSION['ativo'])) {
     $ativo = $_SESSION['ativo'];
+
     $dados_ativo = $ativos->solicitar_lista_ativos($ativo);
     $setores = $ativos->solicitar_setores();
     $lista_setores = [];
@@ -16,10 +17,8 @@ if (isset($_SESSION['ativo'])) {
     for ($i = 0; $i < count($tipos_investimentos); $i++) {
         $lista_tipos_investimento[$tipos_investimentos[$i]['id']] = $tipos_investimentos[$i]['descricao'];
     }
-    var_dump($dados_ativo, $lista_setores, $lista_tipos_investimento);//exit;
-    // unset($_SESSION['ativo']);
+    // var_dump($dados_ativo, $lista_setores, $lista_tipos_investimento);//exit;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,6 +31,10 @@ if (isset($_SESSION['ativo'])) {
 
 <body>
     <section>
+        <a href="/">Página inicial</a>
+        <a href="/detalhes_ativo.php">Detalhes <?= $ativo ?></a>
+    </section>
+    <section>
         <form action="/salvar_edicao_ativo.php" method="get">
             <fieldset>
                 <legend>Edição do ativo</legend>
@@ -40,7 +43,7 @@ if (isset($_SESSION['ativo'])) {
                         <?php
                         $temp_tipo = !in_array($dados_ativo[0]['tipo_investimento_id'], array_keys($lista_tipos_investimento))
                             ? 'Não encontrado'
-                            : $lista_tipos_investimento[$ativo[0]['tipo_investimento_id']];
+                            : $lista_tipos_investimento[$dados_ativo[0]['tipo_investimento_id']];
                         ?>
                         <legend>Dados atuais do ativo</legend>
                         <ul>

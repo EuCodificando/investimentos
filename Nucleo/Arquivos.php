@@ -348,8 +348,38 @@ class Arquivos
     {
         $retorno = [];
         $arquivo = $this->abrir_arquivo('cotacoes');
-        $numero_linhas = file(DIRETORIO_ARQUIVOS."cotacoes.csv");
-        var_dump($numero_linhas);
+        $numero_linhas = count(file(DIRETORIO_ARQUIVOS . "cotacoes.csv"));
+        $contador = 0;
+        $iAtivos = new Ativos();
+        $iBanco = new BaseDados();
+        $lista_ativos = $iAtivos->solicitar_lista_ativos();
+        $ativos = [];
+        for ($i = 0; $i < count($lista_ativos); $i++) {
+            $ativos[$lista_ativos[$i]['ticker']] = $lista_ativos[$i]['id'];
+        }
+        foreach ($ativos as $key => $value) {
+            fseek($arquivo, 0, SEEK_SET);
+            while ($contador < $numero_linhas) {
+                $linha_dados_arquivo = (array) fgetcsv($arquivo, null, ';');
+                if ($linha_dados_arquivo[1] == $key) {
+                    $cotacao['ativo_id'] = $value;
+                    $cotacao['data_cotacao'] = $linha_dados_arquivo[2];
+                    $cotacao['abertura'] = $linha_dados_arquivo[3];
+                    $cotacao['maxima'] = $linha_dados_arquivo[4];
+                    $cotacao['minima'] = $linha_dados_arquivo[5];
+                    $cotacao['fechamento'] = $linha_dados_arquivo[6];
+                    // var_dump($key, $linha_dados_arquivo, $cotacao);//exit;
+                    $retorno_cadastro = $iAtivos->solicitar_cadastro_cotacao($cotacao);
+                    if (is_array($retorno_cadastro)) {
+                        var_dump($retorno_cadastro);exit;
+                        break;
+                    }
+                }
+                $contador++;
+            }
+            $contador = 0;
+        }
+        // var_dump($numero_linhas);
         return $retorno;
     }
 }

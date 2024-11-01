@@ -79,6 +79,7 @@ $ativos_setor = $ativos->solicitar_ativos_setor();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/echarts/echarts.js"></script>
     <title>Dashboard <?= $usuario ?></title>
 </head>
 
@@ -164,8 +165,48 @@ $ativos_setor = $ativos->solicitar_ativos_setor();
                 </tbody>
             </table>
         </section>
-    </article>
+        <section>
+            <!-- ECHARTS - GRÁFICO PIZZA SETORES -->
+            <div id="main" style="width: 600px; height:400px"></div>
+            <?php
+                $eixo_x = implode("','", array_keys($ativos_setor));
+                $dados_eixo_y = [];
+                foreach ($ativos_setor as $value) {
+                    $dados_eixo_y[] = count($value);
+                }
 
+                $eixo_y = implode(',', $dados_eixo_y);
+                var_dump($eixo_y);
+                ?>
+            <script type="text/javascript">
+                //inicializando
+                var myChart = echarts.init(document.getElementById('main'));
+                //definindo as opções
+                var option = {
+                    title: {
+                        text: 'Gráfico de exemplo'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data: ['Ativos']
+                    },
+                    xAxis: {
+                        data: ['<?= $eixo_x ?>']
+                    },
+                    yAxis: {},
+                    series: [
+                        {
+                            name: 'setores',
+                            type: 'pie',
+                            data: [<?= $eixo_y ?>]
+                        }
+                    ]
+                };
+                // Plotar gráfico
+                myChart.setOption(option);
+            </script>
+        </section>
+    </article>
 </body>
 
 </html>
