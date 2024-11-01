@@ -55,6 +55,10 @@ $libera_atualizacao_cotacao = $intervalo->days >= 1;
 </head>
 
 <body>
+    <section>
+        <a href="/">Página inicial</a>
+        <a href="/editar_ativo.php">Editar ativo</a>
+    </section>
     <?php if (!is_null($info)): ?>
         <section>
             <fieldset>
@@ -62,10 +66,8 @@ $libera_atualizacao_cotacao = $intervalo->days >= 1;
                 <p><?= $info ?></p>
             </fieldset>
         </section>
+        <?php unset($_SESSION['retorno_edicao_ativo']) ?>;
     <?php endif ?>
-    <section>
-        <a href="/editar_ativo.php">Editar ativo</a>
-    </section>
     <section>
         <p>Data da última cotação: <?= date_format($data_atualizacao, 'd/m/Y') ?></p>
         <?php if ($libera_atualizacao_cotacao): ?>

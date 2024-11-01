@@ -376,7 +376,7 @@ class Ativos
     {
         $retorno = false;
         $banco = new BaseDados();
-        $banco->editar_ativo($dados_ativo);
+        $retorno = $banco->editar_ativo($dados_ativo);
         return $retorno;
     }
 

@@ -17,7 +17,7 @@ if (isset($_SESSION['ativo'])) {
     for ($i = 0; $i < count($tipos_investimentos); $i++) {
         $lista_tipos_investimento[$tipos_investimentos[$i]['id']] = $tipos_investimentos[$i]['descricao'];
     }
-    var_dump($dados_ativo, $lista_setores, $lista_tipos_investimento);//exit;
+    // var_dump($dados_ativo, $lista_setores, $lista_tipos_investimento);//exit;
 }
 ?>
 <!DOCTYPE html>
@@ -30,6 +30,10 @@ if (isset($_SESSION['ativo'])) {
 </head>
 
 <body>
+    <section>
+        <a href="/">Página inicial</a>
+        <a href="/detalhes_ativo.php">Detalhes <?= $ativo ?></a>
+    </section>
     <section>
         <form action="/salvar_edicao_ativo.php" method="get">
             <fieldset>
