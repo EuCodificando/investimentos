@@ -846,7 +846,7 @@ class BaseDados
     }
     public function editar_ativo(array|string $dados_ativo): bool|array
     {
-        var_dump($dados_ativo);//exit;
+        // var_dump($dados_ativo);//exit;
         $retorno = false;
         if (!$this->checar_conexao()) {
             $this->contectar();
@@ -872,7 +872,7 @@ class BaseDados
                 $retorno['erro'] = "Algo deu errado; " . $e->getMessage();
             }
         }
-        var_dump($retorno);
+        // var_dump($retorno);
         return $retorno;
     }
 
