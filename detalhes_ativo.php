@@ -5,9 +5,18 @@ use Nucleo\Ativos;
 use Nucleo\BaseDados;
 $iBanco = new BaseDados();
 $iAtivo = new Ativos();
-$ativo = $_GET['ativo'];
 session_start();
-$_SESSION['ativo'] = $ativo;
+if (isset($_GET['ativo'])) {
+    $ativo = $_GET['ativo'];
+    $_SESSION['ativo'] = $ativo;
+} else if (isset($_SESSION['ativo'])) {
+    $ativo = $_SESSION['ativo'];
+}
+$info = null;
+if (isset($_SESSION['retorno_edicao_ativo'])) {
+    $info = $_SESSION['retorno_edicao_ativo'];
+}
+var_dump($_SESSION);
 $dados_ativo = $iAtivo->solicitar_lista_ativos($ativo)[0];
 var_dump($_GET, $dados_ativo);
 $cotacoes_ativo = $iAtivo->solicitar_cotacoes($dados_ativo);
@@ -46,6 +55,14 @@ $libera_atualizacao_cotacao = $intervalo->days >= 1;
 </head>
 
 <body>
+    <?php if (!is_null($info)): ?>
+        <section>
+            <fieldset>
+                <legend>Info</legend>
+                <p><?= $info ?></p>
+            </fieldset>
+        </section>
+    <?php endif ?>
     <section>
         <a href="/editar_ativo.php">Editar ativo</a>
     </section>

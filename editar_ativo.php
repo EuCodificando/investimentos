@@ -5,6 +5,7 @@ $ativos = new Ativos();
 session_start();
 if (isset($_SESSION['ativo'])) {
     $ativo = $_SESSION['ativo'];
+
     $dados_ativo = $ativos->solicitar_lista_ativos($ativo);
     $setores = $ativos->solicitar_setores();
     $lista_setores = [];
@@ -17,9 +18,7 @@ if (isset($_SESSION['ativo'])) {
         $lista_tipos_investimento[$tipos_investimentos[$i]['id']] = $tipos_investimentos[$i]['descricao'];
     }
     var_dump($dados_ativo, $lista_setores, $lista_tipos_investimento);//exit;
-    // unset($_SESSION['ativo']);
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
