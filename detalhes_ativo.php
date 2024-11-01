@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set("America/Sao_Paulo");
 include_once __DIR__ . "/autoload.php";
 use Nucleo\Ativos;
 use Nucleo\BaseDados;
@@ -17,12 +18,23 @@ if (is_array($retorno_data) && in_array('erro', array_keys($retorno_data))) {
     // var_dump($retorno_ultima_cotacao);
     $retorno_atualizacao = $iBanco->atualizar_data_cotacoes($retorno_ultima_cotacao['data_cotacao']);
     if ($retorno_atualizacao) {
-        $retorno_data = $iBanco->obter_data_atualizacao_cotacoes()['data_atualizacao_cotacoes'];
+        $retorno_data = $iBanco->obter_data_atualizacao_cotacoes();
         var_dump($retorno_data);
     }
+
     // var_dump($retorno_atualizacao);exit;
 }
-// var_dump($retorno_data);exit;
+$data_atualizacao = new \DateTime($retorno_data['data_atualizacao_cotacoes']);
+
+$data_atual = new \DateTime('now');
+
+
+
+$intervalo = new \DateInterval('P1DT0M');
+
+$intervalo = $data_atualizacao->diff($data_atual);
+$libera_atualizacao_cotacao = $intervalo->days >= 1;
+// var_dump($data);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -38,7 +50,10 @@ if (is_array($retorno_data) && in_array('erro', array_keys($retorno_data))) {
         <a href="/editar_ativo.php">Editar ativo</a>
     </section>
     <section>
-        <p>Data da última cotação: <?= $retorno_data['data_atualizacao_cotacoes'] ?></p>
+        <p>Data da última cotação: <?= date_format($data_atualizacao, 'd/m/Y') ?></p>
+        <?php if ($libera_atualizacao_cotacao): ?>
+            <a href="/atualizar_cotacoes.php">Atualizar cotacoes</a>
+        <?php endif ?>
     </section>
 </body>
 

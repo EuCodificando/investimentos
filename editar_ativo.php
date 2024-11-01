@@ -40,7 +40,7 @@ if (isset($_SESSION['ativo'])) {
                         <?php
                         $temp_tipo = !in_array($dados_ativo[0]['tipo_investimento_id'], array_keys($lista_tipos_investimento))
                             ? 'Não encontrado'
-                            : $lista_tipos_investimento[$ativo[0]['tipo_investimento_id']];
+                            : $lista_tipos_investimento[$dados_ativo[0]['tipo_investimento_id']];
                         ?>
                         <legend>Dados atuais do ativo</legend>
                         <ul>
