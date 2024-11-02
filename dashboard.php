@@ -79,6 +79,7 @@ $ativos_setor = $ativos->solicitar_ativos_setor();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/echarts/echarts.js"></script>
     <title>Dashboard <?= $usuario ?></title>
 </head>
 
@@ -206,7 +207,6 @@ $ativos_setor = $ativos->solicitar_ativos_setor();
             </script>
         </section>
     </article>
-
 </body>
 
 </html>
