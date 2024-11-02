@@ -33,11 +33,11 @@ if (is_array($retorno_data) && in_array('erro', array_keys($retorno_data))) {
 
     // var_dump($retorno_atualizacao);exit;
 }
-$data_atualizacao = new \DateTime($retorno_data['data_atualizacao_cotacoes']);
+$data_atualizacao = new DateTime($retorno_data['data_atualizacao_cotacoes']);
 $eixo_x = [];
 $eixo_y = [];
 for ($i = 252; $i > 0; $i--) {
-    $eixo_x[] = date_format(new \DateTime($cotacoes_ativo[$i]['data_cotacao']), 'd');
+    $eixo_x[] = date_format(new DateTime($cotacoes_ativo[$i]['data_cotacao']), 'd');
     $eixo_y[] = $cotacoes_ativo[$i]['fechamento'];
 }
 
@@ -45,9 +45,9 @@ $x = implode("','", $eixo_x);
 $y = implode(',', $eixo_y);
 
 var_dump(count($eixo_x), $x, count($eixo_y), $y);
-$data_atual = new \DateTime('now');
+$data_atual = new DateTime('now');
 
-$intervalo = new \DateInterval('P1DT0M');
+$intervalo = new DateInterval('P1DT0M');
 
 $intervalo = $data_atualizacao->diff($data_atual);
 $libera_atualizacao_cotacao = $intervalo->days >= 1;
