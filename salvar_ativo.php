@@ -29,4 +29,3 @@ if (isset($_GET['ticker'])) {
     header("Location:/cadastrar_ativo.php");
     exit;
 }
-?>
