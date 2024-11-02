@@ -64,6 +64,13 @@ $libera_atualizacao_cotacao = $intervalo->days >= 1;
 </head>
 
 <body>
+<<<<<<< HEAD
+=======
+    
+<section>
+    <a href="/editar_ativo.php">Editar ativo</a>
+</section>
+>>>>>>> main
     <section>
         <a href="/">Página inicial</a>
         <a href="/editar_ativo.php">Editar ativo</a>
@@ -124,8 +131,12 @@ $libera_atualizacao_cotacao = $intervalo->days >= 1;
                         // smooth: true
                         areaStyle: {}
                     },
+<<<<<<< HEAD
                 ]
                 
+=======
+                ]                
+>>>>>>> main
             };
             grafico.setOption(option);
         </script>
