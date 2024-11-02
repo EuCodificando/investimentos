@@ -163,6 +163,47 @@ $ativos_setor = $ativos->solicitar_ativos_setor();
                     <?php endforeach ?>
                 </tbody>
             </table>
+            <!-- ECHARTS - GRÁFICO PIZZA SETORES -->
+            <div id="main" style="width: 100%; height:400px"></div>
+            <?php
+            $eixo_x = implode("','", array_keys($ativos_setor));
+            $dados_eixo_y = [];
+            foreach ($ativos_setor as $value) {
+                $dados_eixo_y[] = count($value);
+            }
+
+            $eixo_y = implode(',', $dados_eixo_y);
+            ?>
+            <script type="text/javascript">
+                //inicializando
+                var myChart = echarts.init(document.getElementById('main'));
+                window.addEventListener('resize', function () {
+                    myChart.resize();
+                });
+                //definindo as opções
+                var option = {
+                    title: {
+                        text: 'Distribuição dos ativos por setor'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data: ['<?= $eixo_x ?>']
+                    },
+                    xAxis: {
+                        data: ['<?= $eixo_x ?>']
+                    },
+                    yAxis: {},
+                    series: [
+                        {
+                            name: 'setores',
+                            type: 'bar',
+                            data: [<?= $eixo_y ?>]
+                        }
+                    ]
+                };
+                // Plotar gráfico
+                myChart.setOption(option);
+            </script>
         </section>
     </article>
 
