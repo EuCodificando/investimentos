@@ -164,31 +164,31 @@ $ativos_setor = $ativos->solicitar_ativos_setor();
                     <?php endforeach ?>
                 </tbody>
             </table>
-        </section>
-        <section>
             <!-- ECHARTS - GRÁFICO PIZZA SETORES -->
-            <div id="main" style="width: 600px; height:400px"></div>
+            <div id="main" style="width: 100%; height:400px"></div>
             <?php
-                $eixo_x = implode("','", array_keys($ativos_setor));
-                $dados_eixo_y = [];
-                foreach ($ativos_setor as $value) {
-                    $dados_eixo_y[] = count($value);
-                }
+            $eixo_x = implode("','", array_keys($ativos_setor));
+            $dados_eixo_y = [];
+            foreach ($ativos_setor as $value) {
+                $dados_eixo_y[] = count($value);
+            }
 
-                $eixo_y = implode(',', $dados_eixo_y);
-                var_dump($eixo_y);
-                ?>
+            $eixo_y = implode(',', $dados_eixo_y);
+            ?>
             <script type="text/javascript">
                 //inicializando
                 var myChart = echarts.init(document.getElementById('main'));
+                window.addEventListener('resize', function () {
+                    myChart.resize();
+                });
                 //definindo as opções
                 var option = {
                     title: {
-                        text: 'Gráfico de exemplo'
+                        text: 'Distribuição dos ativos por setor'
                     },
                     tooltip: {},
                     legend: {
-                        data: ['Ativos']
+                        data: ['<?= $eixo_x ?>']
                     },
                     xAxis: {
                         data: ['<?= $eixo_x ?>']
@@ -197,7 +197,7 @@ $ativos_setor = $ativos->solicitar_ativos_setor();
                     series: [
                         {
                             name: 'setores',
-                            type: 'pie',
+                            type: 'bar',
                             data: [<?= $eixo_y ?>]
                         }
                     ]
